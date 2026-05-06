@@ -5,6 +5,7 @@ import vo.EmployeeVO;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class EmployeeService {
     private static EmployeeService instance = new EmployeeService();
@@ -79,5 +80,18 @@ public class EmployeeService {
     public void deleteEmployee(String id) throws EmployeeException {
         if (!list.remove(new EmployeeVO(id, null, null, 0, null)))
             throw new EmployeeException("삭제할 사원정보가 없습니다.");
+    }
+
+    public ArrayList<EmployeeVO> searchForNameEmployee(String name) throws EmployeeException {
+        ArrayList<EmployeeVO> result = new ArrayList<EmployeeVO>();
+        for (EmployeeVO vo : list){
+            if(vo.getName().indexOf(name) != -1)//검색 결과가 있으면 result에 추가
+                result.add(vo);
+        }
+        if(result.isEmpty())
+            throw new EmployeeException("검색 결과가 없습니다");
+        return result;
+//        List<EmployeeVO> rList = list.stream().filter(item -> item.getName().indexOf(name) != -1).collect(Collectors.toList());
+//        return rList;
     }
 }
