@@ -70,6 +70,12 @@ public class EmployeeService {
         return list.add(employeeVO);
     }
 
+    public EmployeeVO searchEmployee(String id) throws EmployeeException {
+        int idx = list.indexOf(new EmployeeVO(id, null, null, 0, null));
+        if (idx == -1) throw new EmployeeException("해당 사원 정보가 없습니다");
+        return list.get(idx);
+    }
+
     public void deleteEmployee(String id) throws EmployeeException {
         if (!list.remove(new EmployeeVO(id, null, null, 0, null)))
             throw new EmployeeException("삭제할 사원정보가 없습니다.");
