@@ -1,5 +1,6 @@
 package service;
 
+import exception.EmployeeException;
 import vo.EmployeeVO;
 
 import java.io.BufferedReader;
@@ -24,16 +25,17 @@ public class EmployeeService {
     private void loadToCSV() {
         try(FileReader fr = new FileReader("employee.csv");
             BufferedReader br = new BufferedReader(fr)){
-            br.readLine(); //헤더 제거
+            br.readLine();//필드 목록 건너뜀
             while(true){
                 String str = br.readLine();
                 if(str == null) break;
 //                System.out.println(str);
                 String[] arr = str.split(",");
-                list.add(new EmployeeVO(arr[0], arr[1], arr[2], Integer.parseInt(arr[3]), arr[4]));
+                list.add(new EmployeeVO(arr[0],arr[1],arr[2],
+                        Integer.parseInt(arr[3]),arr[4]));
             }
-            //사원정보 로드 완료
-            System.out.println("사원정보 로드 완료");
+            //파일 로드 완료
+            System.out.println("사원 정보 로드 완료");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -45,5 +47,18 @@ public class EmployeeService {
         if (instance == null)
             instance = new EmployeeService();
         return instance;
+    }
+
+    public void checkDuplicateEmployeeId(String id) throws EmployeeException {
+
+        int idx = list.indexOf(new EmployeeVO(id,null,null,0,null));
+
+        if(idx != -1)
+            throw new EmployeeException("사원번호가 중복되었습니다.");
+
+    }
+
+    public boolean appendEmployee(EmployeeVO employeeVO) {
+        return list.add(employeeVO);
     }
 }
